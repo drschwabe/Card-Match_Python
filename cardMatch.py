@@ -13,15 +13,48 @@ shuffle(cardValues)
 cardSide = ['face down', 'face down', 'face down', 'face down', 'face down', 'face down', 'face down', 'face down', 'face down', 'face down', 'face down', 'face down', 'face down', 'face down', 'face down', 'face down', 'face down', 'face down']
 
 
-#give the user only 3 possible chances (a chance is not used if a match is made)
+#give the user only 4 possible chances (a chance is not used if a match is made)
 chances = 4;
 
-#if the user wins 9 matches they will win
+#if the user makes 9 matches, they win the level
 matches = 0;
+
+currentLevel = 1;
 
 #let the user pick a card!
 
 print "\n#### Welcome to Card Match ####\n"
+
+def beginNextLevel(level) :
+	global matches;
+	global chances;
+	global cardValues;
+	global cardSide;
+	global currentLevel;
+	#reset initial vars
+	chances = 4;
+	matches = 0;
+
+	print "Next level begins...\n";
+
+	if level == 2 :
+		print "Level 2"
+		#change values for level 2 and place all cards face down
+		cardValues = ['carrot', 'carrot', 'carrot', 'carrot', 'corn', 'corn', 'corn', 'corn', 'tomato', 'tomato', 'tomato', 'tomato', 'mushroom', 'mushroom', 'bee', 'bee', 'water bucket', 'water bucket']
+		cardSide = ['face down', 'face down', 'face down', 'face down', 'face down', 'face down', 'face down', 'face down', 'face down', 'face down', 'face down', 'face down', 'face down', 'face down', 'face down', 'face down', 'face down', 'face down']
+		shuffle(cardValues);
+		pickCard();
+
+	elif level == 3 :
+		print "Level 3"
+		cardValues = ['pineapple', 'pineapple', 'pineapple', 'pineapple', 'watermellon', 'watermellon', 'watermellon', 'watermellon', 'kiwi', 'kiwi', 'kiwi', 'kiwi', 'tarantualla', 'tarantualla', 'parrot', 'parrot', 'machete', 'machete']
+		cardSide = ['face down', 'face down', 'face down', 'face down', 'face down', 'face down', 'face down', 'face down', 'face down', 'face down', 'face down', 'face down', 'face down', 'face down', 'face down', 'face down', 'face down', 'face down']
+		shuffle(cardValues);
+		pickCard();
+
+	elif level == 4 :
+		print "All levels complete, you wont the game!";
+
 
 def pickCard() :
 	global selectedCardNumber;
@@ -54,6 +87,7 @@ def pickAgain() :
 	global previousSelectedCardNumber;
 	global chances;
 	global matches;
+	global currentLevel;
 	previousSelectedCardNumber = selectedCardNumber;
 	selectedCard = raw_input("===\nPlease choose another card. From 0 to 17\n");
 	selectedCardNumber = int(selectedCard);
@@ -72,7 +106,9 @@ def pickAgain() :
 			matches = matches + 1;
 			sleep(1);
 			if matches == 9 :
-				print "You won the game!\a\a\a\a\a";
+				print "You won the level!\a\a\a\a\a";
+				currentLevel = currentLevel + 1;
+				beginNextLevel(currentLevel)
 			else :
 				pickCard();
 		else :
