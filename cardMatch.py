@@ -3,27 +3,24 @@ from random import shuffle
 
 #Card Match
 
-#determine the value of each card 
-cardValues = ['cow', 'cow', 'cow', 'cow', 'eagle', 'eagle', 'eagle', 'eagle', 'ladybug', 'ladybug', 'ladybug', 'ladybug', 'gold', 'gold', 'ruby', 'ruby', 'diamond', 'diamond']
-
-#shuffle the cards
-shuffle(cardValues)
-
-#flip them all face down
-cardSide = ['face down', 'face down', 'face down', 'face down', 'face down', 'face down', 'face down', 'face down', 'face down', 'face down', 'face down', 'face down', 'face down', 'face down', 'face down', 'face down', 'face down', 'face down']
-
-
-#give the user only 4 possible chances (a chance is not used if a match is made)
-chances = 4;
-
-#if the user makes 9 matches, they win the level
-matches = 0;
-
 currentLevel = 1;
 
-#let the user pick a card!
-
 print "\n#### Welcome to Card Match ####\n"
+
+def mainMenu():
+	print "---Menu---\nSurvival (s)\nCompetitive (c)\nTournament (t)\n"
+	mainMenuChoice = raw_input();
+
+	if mainMenuChoice == "s":
+		print "You picked Survival mode";
+		beginNextLevel(1);
+
+	elif mainMenuChoice == "c":
+		print "You picked Competitive mode";
+
+	elif mainMenuChoice == "t":
+		print "You picked Tournament mode"
+
 
 def beginNextLevel(level) :
 	global matches;
@@ -31,14 +28,26 @@ def beginNextLevel(level) :
 	global cardValues;
 	global cardSide;
 	global currentLevel;
-	#reset initial vars
-	chances = 4;
-	matches = 0;
+	#reset vars
+	chances = 4; 	#give the user only 4 possible chances (a chance is not used if a match is made)
+	matches = 0; 	#if the user makes 9 matches, they win the level
 
-	print "Next level begins...\n";
+	if level == 1 :
+		print "Game Starts!\nLevel 1"
+
+		#determine the value of each card 
+		cardValues = ['cow', 'cow', 'cow', 'cow', 'eagle', 'eagle', 'eagle', 'eagle', 'ladybug', 'ladybug', 'ladybug', 'ladybug', 'gold', 'gold', 'ruby', 'ruby', 'diamond', 'diamond']
+
+		#flip them all face down
+		cardSide = ['face down', 'face down', 'face down', 'face down', 'face down', 'face down', 'face down', 'face down', 'face down', 'face down', 'face down', 'face down', 'face down', 'face down', 'face down', 'face down', 'face down', 'face down']	
+
+		shuffle(cardValues) #shuffle the cards
+
+		pickCard();
+
 
 	if level == 2 :
-		print "Level 2"
+		print "Next level begins...\nLevel 2";
 		#change values for level 2 and place all cards face down
 		cardValues = ['carrot', 'carrot', 'carrot', 'carrot', 'corn', 'corn', 'corn', 'corn', 'tomato', 'tomato', 'tomato', 'tomato', 'mushroom', 'mushroom', 'bee', 'bee', 'water bucket', 'water bucket']
 		cardSide = ['face down', 'face down', 'face down', 'face down', 'face down', 'face down', 'face down', 'face down', 'face down', 'face down', 'face down', 'face down', 'face down', 'face down', 'face down', 'face down', 'face down', 'face down']
@@ -46,17 +55,17 @@ def beginNextLevel(level) :
 		pickCard();
 
 	elif level == 3 :
-		print "Level 3"
+		print "Next level begins...\nLevel 3";
 		cardValues = ['pineapple', 'pineapple', 'pineapple', 'pineapple', 'watermellon', 'watermellon', 'watermellon', 'watermellon', 'kiwi', 'kiwi', 'kiwi', 'kiwi', 'tarantualla', 'tarantualla', 'parrot', 'parrot', 'machete', 'machete']
 		cardSide = ['face down', 'face down', 'face down', 'face down', 'face down', 'face down', 'face down', 'face down', 'face down', 'face down', 'face down', 'face down', 'face down', 'face down', 'face down', 'face down', 'face down', 'face down']
 		shuffle(cardValues);
 		pickCard();
 
 	elif level == 4 :
-		print "All levels complete, you wont the game!";
+		print "All levels complete, you won the game!";
 
 
-def pickCard() :
+def pickCard() : 	#let the user pick a card!
 	global selectedCardNumber;
 	global previousSelectedCardNumber;
 	selectedCard = raw_input("===\nPlease choose a card from 0 to 17\n");
@@ -106,7 +115,7 @@ def pickAgain() :
 			matches = matches + 1;
 			sleep(1);
 			if matches == 9 :
-				print "You won the level!\a\a\a\a\a";
+				print "You won the level!\a\a\a\a\a\n";
 				currentLevel = currentLevel + 1;
 				beginNextLevel(currentLevel)
 			else :
@@ -129,4 +138,4 @@ def pickAgain() :
 		selectedCardNumber = previousSelectedCardNumber; #reset the selectedCard
 		pickAgain();
 
-pickCard();
+mainMenu();
