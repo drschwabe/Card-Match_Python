@@ -1,141 +1,166 @@
-from time import sleep
+#### Card Match alpha2 Python ####
+
 from random import shuffle
+from sys import exit
+from time import sleep
 
-#Card Match
+#Establish variables: 
+spark = "";
+beginSwitch = False;
+checkSelectionSwitch = False;
 
-currentLevel = 1;
+firstCard = 0;
+secondCard = 0;
+choosingFirstCard = False;
+choosingSecondCard = False;
 
-print "\n#### Welcome to Card Match ####\n"
+cardValues = [];
+cardStatus = [];
 
-def mainMenu():
-	print "---Menu---\nSurvival (s)\nCompetitive (c)\nTournament (t)\n"
-	mainMenuChoice = raw_input();
+matches = 0;
+chances = 6;
 
-	if mainMenuChoice == "s":
-		print "You picked Survival mode";
-		beginNextLevel(1);
+#Function to handle player input: 
+def playerHandler(): 
+	global spark;
+	global beginSwitch;
+	global checkSelectionSwitch;
+	global firstCard;
+	global secondCard;
+	global choosingFirstCard;
+	global choosingSecondCard; 
 
-	elif mainMenuChoice == "c":
-		print "You picked Competitive mode";
+	#Player input initiates execution flow so let's refer to it as the "spark": 
+	spark = raw_input();
 
-	elif mainMenuChoice == "t":
-		print "You picked Tournament mode"
+	if(spark == "begin" or spark =="b"):
+		print "Game starts\n\n"; 
+		#Hit the beginSwitch...
+		beginSwitch = True;
+		#and connect to the ai function: 
+		aiHandler();
 
+	if(choosingFirstCard == True):
+		#Convert the player's input from string to an integer so it can be used as an array key:
+		firstCard = int(spark);
+		checkSelectionSwitch = True;
+		aiHandler();
 
-def beginNextLevel(level) :
-	global matches;
-	global chances;
+	if(choosingSecondCard == True):
+		selectedCard = firstCard;
+		secondCard = int(spark);
+		print ("the second card is " + str(secondCard));
+		checkSelectionSwitch = True;
+		aiHandler();
+
+#Function to compute most logic: 
+def aiHandler():
+	global spark;
+	global beginSwitch;
+	global checkSelectionSwitch;
+	global firstCard;
+	global secondCard;
+	global choosingFirstCard;
+	global choosingSecondCard; 
+
 	global cardValues;
-	global cardSide;
-	global currentLevel;
-	#reset vars
-	chances = 4; 	#give the user only 4 possible chances (a chance is not used if a match is made)
-	matches = 0; 	#if the user makes 9 matches, they win the level
-
-	if level == 1 :
-		print "Game Starts!\nLevel 1"
-
-		#determine the value of each card 
-		cardValues = ['cow', 'cow', 'cow', 'cow', 'eagle', 'eagle', 'eagle', 'eagle', 'ladybug', 'ladybug', 'ladybug', 'ladybug', 'gold', 'gold', 'ruby', 'ruby', 'diamond', 'diamond']
-
-		#flip them all face down
-		cardSide = ['face down', 'face down', 'face down', 'face down', 'face down', 'face down', 'face down', 'face down', 'face down', 'face down', 'face down', 'face down', 'face down', 'face down', 'face down', 'face down', 'face down', 'face down']	
-
-		shuffle(cardValues) #shuffle the cards
-
-		pickCard();
-
-
-	if level == 2 :
-		print "Next level begins...\nLevel 2";
-		#change values for level 2 and place all cards face down
-		cardValues = ['carrot', 'carrot', 'carrot', 'carrot', 'corn', 'corn', 'corn', 'corn', 'tomato', 'tomato', 'tomato', 'tomato', 'mushroom', 'mushroom', 'bee', 'bee', 'water bucket', 'water bucket']
-		cardSide = ['face down', 'face down', 'face down', 'face down', 'face down', 'face down', 'face down', 'face down', 'face down', 'face down', 'face down', 'face down', 'face down', 'face down', 'face down', 'face down', 'face down', 'face down']
-		shuffle(cardValues);
-		pickCard();
-
-	elif level == 3 :
-		print "Next level begins...\nLevel 3";
-		cardValues = ['pineapple', 'pineapple', 'pineapple', 'pineapple', 'watermellon', 'watermellon', 'watermellon', 'watermellon', 'kiwi', 'kiwi', 'kiwi', 'kiwi', 'tarantualla', 'tarantualla', 'parrot', 'parrot', 'machete', 'machete']
-		cardSide = ['face down', 'face down', 'face down', 'face down', 'face down', 'face down', 'face down', 'face down', 'face down', 'face down', 'face down', 'face down', 'face down', 'face down', 'face down', 'face down', 'face down', 'face down']
-		shuffle(cardValues);
-		pickCard();
-
-	elif level == 4 :
-		print "All levels complete, you won the game!";
-
-
-def pickCard() : 	#let the user pick a card!
-	global selectedCardNumber;
-	global previousSelectedCardNumber;
-	selectedCard = raw_input("===\nPlease choose a card from 0 to 17\n");
-	selectedCardNumber = int(selectedCard);
-	sleep(1);
-
-	print "\nYou chose card", selectedCardNumber; 
-	print "That card is currently", cardSide[selectedCardNumber]; 
-
-
-	if cardSide[selectedCardNumber] == "face down" :
-		cardSide[selectedCardNumber] = "face up";
-		print "We will now turn it over to see what it is...\n";
-		sleep(1);
-		print "The card value is: ", cardValues[selectedCardNumber];
-		print "\n"
-		sleep(1);
-		pickAgain();
-	else :  #if the card is faceup, make the user try again
-		print "That card is already flipped over! Its your ", cardValues[selectedCardNumber];
-		pickCard();
-
-
-#let the user pick another card and see if they match
-
-def pickAgain() :
-	global selectedCardNumber;
-	global previousSelectedCardNumber;
+	global cardStatus 
 	global chances;
 	global matches;
-	global currentLevel;
-	previousSelectedCardNumber = selectedCardNumber;
-	selectedCard = raw_input("===\nPlease choose another card. From 0 to 17\n");
-	selectedCardNumber = int(selectedCard);
-	sleep(1);
 
-	print "\nYou chose card", selectedCardNumber; 
-	print "That card is currently", cardSide[selectedCardNumber]; 
+	if(beginSwitch == True):
+		#Set card values, their status, and then shuffle them. 
+		cardValues = ['cow','cow','cow','cow','eagle','eagle','eagle','eagle','ladybug','ladybug','ladybug','ladybug','gold','gold','ruby','ruby','diamond','diamond'];
+		cardStatus = ['face down','face down','face down','face down','face down','face down','face down','face down','face down','face down','face down','face down','face down','face down','face down','face down','face down','face down'];		
+		shuffle(cardValues);
 
-	if cardSide[selectedCardNumber] == "face down" :
-		cardSide[selectedCardNumber] = "face up";
-		print "We will now turn it over to see what it is...\n";
-		sleep(1);
-		print "The card value is: ", cardValues[selectedCardNumber];
-		if cardValues[selectedCardNumber] == cardValues[previousSelectedCardNumber] :
-			print "Wow, you got a match!\a\n\n";
-			matches = matches + 1;
+		#[graphics] Display a 'table' of cards for the user: 
+		print(cardStatus);
+
+		#[graphics] Prompt the user to make a selection...
+		print("\nPlease choose a card from 0 to 17");
+		#activate "choostingFirstCard"...
+		choosingFirstCard = True;
+		#turn off beginSwitch...
+		beginSwitch = False;
+		#Fire back to the player input function: 
+		playerHandler();
+
+	if(checkSelectionSwitch == True):
+
+		if cardStatus[firstCard] == "face down" :
+			#If the firstCard is face down, we know this is their first selection.
+			#[graphics] Inform the user we will flip over the card now: 
+			print "\nYou chose card", firstCard; 
+			print "We will now turn over that card to see what it is...\n";
+
+			#Flip the card...
+			cardStatus[firstCard] = "face up";
+			#[graphics] Create a 1 second delay before revealing anything: 
 			sleep(1);
-			if matches == 9 :
-				print "You won the level!\a\a\a\a\a\n";
-				currentLevel = currentLevel + 1;
-				beginNextLevel(currentLevel)
+
+			#[graphics] Reveal the value of the card to the user: 
+			print "The card value is: " + cardValues[firstCard] + "\n";
+			sleep(1);
+
+			print cardStatus;
+			print "\nChoose another card from 0 to 17 (to match your: " + cardValues[firstCard] + ")";
+			choosingFirstCard = False;
+			choosingSecondCard = True;
+			playerHandler()
+
+		elif cardStatus[secondCard] == "face down":
+			print "\nYou chose card", secondCard;
+			print "Lets see what it is...\n"
+			cardStatus[secondCard] = "face up"; 
+			sleep(1);
+
+			print "The card value is: ", cardValues[secondCard];
+			sleep(1);
+
+			if (cardValues[firstCard] == cardValues[secondCard]):
+				print "You got a match!\a\n\n";
+				matches = matches + 1;
+				#Set the status of the card to the value of the card (flipped up permanently):
+				cardStatus[firstCard] = cardValues[firstCard];
+				cardStatus[secondCard] = cardValues[secondCard];
+
+				if matches == 9 :
+					print cardStatus
+					print "You won the game!\a\a\a\a\a\n";
+					exit();
+
+				else: 
+					print "You have this many matches: " + str(matches) + " (of 9 total required)\n";
+					print cardStatus;
+					print "\nSee if you can match another pair.  Choose a card from 0 to 17:"
+					choosingFirstCard = True;
+					playerHandler();
+
 			else :
-				pickCard();
+				print "\nSorry, that was not a match.  Try again.";
+				chances = chances -1;
+				print "(You have this many chances left: " + str(chances) + ")\n"; 
+				cardStatus[firstCard] = "face down";
+				cardStatus[secondCard] = "face down";
+
+				if chances == 0 :
+					print "Game over";
+					sleep(1);
+					exit();
+
+				else:
+					print cardStatus;
+					choosingFirstCard = True;
+					playerHandler();
+
 		else :
-			print "Sorry, that was not a match :(\n\n";
-			chances = chances -1;
-			#reset the selected cards
-			cardSide[selectedCardNumber] = "face down"; 
-			cardSide[previousSelectedCardNumber] = "face down";
-			print "You have %d chances left" % chances;
-			if chances == 0 :
-				print "Game over";
-				sleep(1);
-			else :
-				pickCard();
+			print "That card is already flipped!";
+			sleep(1);
+			print "Choose another card from 0 to 17:"
+			playerHandler();
 
-	else : 
-		print "That card is already flipped ovenr! Its your ", cardValues[selectedCardNumber];
-		selectedCardNumber = previousSelectedCardNumber; #reset the selectedCard
-		pickAgain();
 
-mainMenu();
+print "\n#### Welcome to Card Match ####\n(type 'B' to Begin)";
+
+playerHandler();
